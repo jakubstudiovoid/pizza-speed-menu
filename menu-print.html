@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <title>Pizza Speed — Menu</title>
+  <link rel="stylesheet" href="fonts/fonts.css" />
+  <style>
+:root {
+  --paper: #F7F2EA;
+  --ink: #1A1714;
+  --muted: #5E5852;
+  --ember: #E44B16;
+  --line: #CFC6BB;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #fff;
+  color: var(--ink);
+  font-family: "Outfit", sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+@page { size: A4; margin: 0; }
+.sheet {
+  width: 210mm;
+  height: 297mm;
+  background: var(--paper);
+  overflow: hidden;
+  page-break-after: always;
+  display: flex;
+  flex-direction: column;
+}
+.sheet:last-child { page-break-after: auto; }
+
+.letter {
+  flex: 0 0 auto;
+  text-align: center;
+  padding: 6.5mm 11mm 0;
+}
+.letter img {
+  height: 14mm;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+.letter .tag {
+  margin-top: 2.2mm;
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: 8pt;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+.letter .wait {
+  margin-top: 1.4mm;
+  font-size: 7.8pt;
+  color: var(--muted);
+}
+.letter .rule {
+  height: 0.35mm;
+  background: var(--ember);
+  margin: 4mm 0 0;
+}
+
+.pad {
+  padding: 6mm 11mm 8mm;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.pad-top { padding-top: 9mm; }
+
+.openers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10mm;
+  margin-bottom: 4.5mm;
+  flex: 0 0 auto;
+  align-items: start;
+}
+.openers .dish { flex: none; padding: 1.3mm 0; }
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10mm;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.hd {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4mm;
+  margin: 0 0 2.2mm;
+  padding-bottom: 1.6mm;
+  border-bottom: 0.4mm solid var(--ink);
+  flex: 0 0 auto;
+}
+.hd h2 {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: 13.5pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.hd span {
+  font-size: 7.8pt;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ember);
+  white-space: nowrap;
+}
+.dish + .hd { margin-top: 4.2mm; }
+
+.grp { display: contents; }
+.grp h4, .col > h4 {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: 8.4pt;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin: 3.2mm 0 1.4mm;
+  padding-bottom: 1mm;
+  border-bottom: 0.22mm solid var(--ember);
+  flex: 0 0 auto;
+}
+.hd + .grp h4, .hd + h4 { margin-top: 0; }
+.grp h4 em {
+  font-style: normal;
+  font-family: "Outfit", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-left: 2mm;
+  font-size: 7.4pt;
+}
+
+.dish {
+  flex: 1 1 auto;
+  min-height: min-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.55mm 0;
+}
+.dish .row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6mm;
+}
+.dish h3 {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: 10.6pt;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  flex: 0 1 auto;
+}
+.lead {
+  flex: 1 1 auto;
+  border-bottom: 0.16mm dotted #C4BAB0;
+  margin: 0 0.6mm 1.6mm;
+  min-width: 5mm;
+  height: 0;
+  align-self: flex-end;
+}
+.dish .price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 10.6pt;
+  color: var(--ember);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.dish p {
+  margin-top: 0.5mm;
+  font-size: 9.3pt;
+  line-height: 1.32;
+  color: var(--muted);
+}
+.dish h3 .spec,
+h4 .spec,
+.snacks .spec {
+  font-family: "Outfit", sans-serif;
+  font-weight: 400;
+  font-size: 8pt;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  text-transform: none;
+}
+.drink .dish h3 .spec {
+  font-weight: 400;
+  font-size: 8.4pt;
+}
+.tag-badge {
+  display: inline-block;
+  margin-left: 1.8mm;
+  font-family: "Outfit", sans-serif;
+  font-weight: 500;
+  font-size: 6.6pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  vertical-align: 0.35mm;
+  padding: 0;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ember);
+  background: none;
+  border: none;
+}
+.tag-badge.novinka,
+.tag-badge.vegan {
+  color: var(--ember);
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.drink h4 { margin-top: 2.6mm; margin-bottom: 1mm; flex: 0 0 auto; }
+.drink .dish h3 {
+  font-size: 10.2pt;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: "Outfit", sans-serif;
+  font-weight: 600;
+}
+
+.band {
+  flex: 0 0 96mm;
+  min-height: 96mm;
+  margin-top: 2mm;
+  padding-top: 3.4mm;
+  border-top: 0.4mm solid var(--ink);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10mm;
+  align-items: stretch;
+}
+.band .col { height: 100%; }
+.band .dish {
+  flex: 1 0 auto;
+  min-height: min-content;
+  padding: 1.2mm 0;
+}
+
+.snacks {
+  flex: 0 0 auto;
+  margin-top: auto;
+  padding-top: 2.8mm;
+  border-top: 0.35mm solid var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1.6mm 6mm;
+  font-size: 9pt;
+}
+.snacks strong {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: 8pt;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+.snacks b { color: var(--ember); font-weight: 600; margin-left: 1.5mm; }
+</style>
+</head>
+<body>
+
+<section class="sheet" id="p1">
+  <header class="letter">
+    <img src="brand/logo.png" alt="Pizza Speed" />
+    <p class="tag">Pizza přímo z ohně</p>
+    <p class="wait">Doba čekání se odvíjí i od počtu objednávek na rozvoz.</p>
+    <div class="rule"></div>
+  </header>
+  <div class="pad">
+    <div class="openers">
+      <div>
+        <header class="hd">
+    <h2>Polévky</h2>
+    
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Jizerská česnečka</h3><i class="lead"></i><span class="price">65</span></div>
+    <p>sýr, šunka, krutony</p>
+  </article><article class="dish">
+    <div class="row"><h3>Vývar</h3><i class="lead"></i><span class="price">60</span></div>
+    <p>s nudlemi nebo rýží</p>
+  </article>
+      </div>
+      <div>
+        <header class="hd">
+    <h2>Předkrmy</h2>
+    
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Fuccacio</h3><i class="lead"></i><span class="price">114</span></div>
+    <p>pizza chléb, olivový olej, rozmarýn, česnek</p>
+  </article>
+      </div>
+    </div>
+    <header class="hd">
+    <h2>Pizza</h2>
+    <span>ø 32 cm</span>
+  </header>
+    <div class="cols">
+      <div class="col"><article class="dish">
+    <div class="row"><h3>Americana</h3><i class="lead"></i><span class="price">166</span></div>
+    <p>salza, sýr, šunka, kukuřice</p>
+  </article><article class="dish">
+    <div class="row"><h3>Asijská</h3><i class="lead"></i><span class="price">175</span></div>
+    <p>salza, sýr, kuřecí maso, pórek, mandle, sójová omáčka</p>
+  </article><article class="dish">
+    <div class="row"><h3>Bella</h3><i class="lead"></i><span class="price">175</span></div>
+    <p>smetana, sýr, kuřecí maso, niva, brokolice</p>
+  </article><article class="dish">
+    <div class="row"><h3>Bolognese<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">170</span></div>
+    <p>salza, sýr, ostrá mletá masová směs, feferonky</p>
+  </article><article class="dish">
+    <div class="row"><h3>Bolsano</h3><i class="lead"></i><span class="price">184</span></div>
+    <p>smetana, sýr, kuřecí maso, niva, parmezán, kukuřice, rozmarýn</p>
+  </article><article class="dish">
+    <div class="row"><h3>Brava</h3><i class="lead"></i><span class="price">184</span></div>
+    <p>salza, sýr, slanina, parmezán, vejce, listový špenát, česnek, oregáno</p>
+  </article><article class="dish">
+    <div class="row"><h3>Brusinková</h3><i class="lead"></i><span class="price">180</span></div>
+    <p>smetana, sýr, šunka, hermelín, brusinky</p>
+  </article><article class="dish">
+    <div class="row"><h3>Calzone</h3><i class="lead"></i><span class="price">175</span></div>
+    <p>plněná kapsa · salza, sýr, šunka, žampiony, bazalka</p>
+  </article><article class="dish">
+    <div class="row"><h3>Capricciosa</h3><i class="lead"></i><span class="price">165</span></div>
+    <p>salza, sýr, šunka, žampiony, bazalka</p>
+  </article><article class="dish">
+    <div class="row"><h3>Carlo Bruno</h3><i class="lead"></i><span class="price">182</span></div>
+    <p>salza, sýr, šunka, paprikový salám, cibule, vejce</p>
+  </article><article class="dish">
+    <div class="row"><h3>Čabája<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, čabajka, feferonky</p>
+  </article><article class="dish">
+    <div class="row"><h3>Emiliano</h3><i class="lead"></i><span class="price">184</span></div>
+    <p>smetana, sýr, šunka, tuňák, cibule</p>
+  </article><article class="dish">
+    <div class="row"><h3>Fausto<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">163</span></div>
+    <p>salza, sýr, žampiony, olivy</p>
+  </article></div>
+      <div class="col"><article class="dish">
+    <div class="row"><h3>Funghi<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">161</span></div>
+    <p>salza, sýr, žampiony</p>
+  </article><article class="dish">
+    <div class="row"><h3>Hawai</h3><i class="lead"></i><span class="price">165</span></div>
+    <p>salza, sýr, šunka, ananas</p>
+  </article><article class="dish">
+    <div class="row"><h3>Chorizo</h3><i class="lead"></i><span class="price">189</span></div>
+    <p>salza, sýr, chorizo salám, listový špenát, vlašské ořechy</p>
+  </article><article class="dish">
+    <div class="row"><h3>Kansas</h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, šunka, žampiony, kukuřice, brokolice</p>
+  </article><article class="dish">
+    <div class="row"><h3>Krevetová</h3><i class="lead"></i><span class="price">195</span></div>
+    <p>salza, sýr, maxi kreveta, krevetky, surimi, olivy</p>
+  </article><article class="dish">
+    <div class="row"><h3>Kuřecí</h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, kuřecí maso, pórek, žampiony, kapie</p>
+  </article><article class="dish">
+    <div class="row"><h3>Labůžo</h3><i class="lead"></i><span class="price">180</span></div>
+    <p>salza, sýr, šunka, salám, hermelín, paprika, rajče, žampiony</p>
+  </article><article class="dish">
+    <div class="row"><h3>Loupežnická<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, klobása, salám, feferonky, pórek</p>
+  </article><article class="dish">
+    <div class="row"><h3>Lovecká</h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, lovecký salám, kukuřice, hermelín</p>
+  </article><article class="dish">
+    <div class="row"><h3>Margherita<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">145</span></div>
+    <p>salza, sýr, bazalka</p>
+  </article><article class="dish">
+    <div class="row"><h3>Masový mix</h3><i class="lead"></i><span class="price">184</span></div>
+    <p>salza, sýr, kuřecí maso, slanina, šunka</p>
+  </article><article class="dish">
+    <div class="row"><h3>Mercanto Fabio<span class="tag-badge novinka">Novinka</span><span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">214</span></div>
+    <p>smetana, sýr, taleggio, pecorino, piniové oříšky, sušená rajčata, rukola</p>
+  </article><article class="dish">
+    <div class="row"><h3>Messicana<span class="tag-badge lehce">Lehce pálivé</span></h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, pikantní salám, cibule, vejce, pikantní olej</p>
+  </article></div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="p2">
+  <div class="pad pad-top">
+    <header class="hd">
+    <h2>Pizza</h2>
+    <span>ø 32 cm</span>
+  </header>
+    <div class="cols">
+      <div class="col"><article class="dish">
+    <div class="row"><h3>Miláno</h3><i class="lead"></i><span class="price">184</span></div>
+    <p>salza, uzený sýr, klobása, lovecký salám, cibule, kukuřice</p>
+  </article><article class="dish">
+    <div class="row"><h3>Monte Bianco</h3><i class="lead"></i><span class="price">174</span></div>
+    <p>smetana, sýr, brambory, slanina, česnek, rozmarýn</p>
+  </article><article class="dish">
+    <div class="row"><h3>Niva speciál<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">167</span></div>
+    <p>salza, niva, žampiony</p>
+  </article><article class="dish">
+    <div class="row"><h3>Pancetta</h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, žampiony, slanina</p>
+  </article><article class="dish">
+    <div class="row"><h3>Parmská se sušenými rajčaty</h3><i class="lead"></i><span class="price">210</span></div>
+    <p>salza, sýr, parmská šunka, sušená rajčata, rukola, parmezán</p>
+  </article><article class="dish">
+    <div class="row"><h3>Piccante<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">166</span></div>
+    <p>salza, sýr, šunka, feferonky</p>
+  </article><article class="dish">
+    <div class="row"><h3>Pizza Speed</h3><i class="lead"></i><span class="price">189</span></div>
+    <p>salza, sýr, slanina, kuřecí maso, česnek, oregáno, brokolice</p>
+  </article><article class="dish">
+    <div class="row"><h3>Pražského uzenáře</h3><i class="lead"></i><span class="price">180</span></div>
+    <p>smetana, sýr, šunka, kuřecí maso, pórek, žampiony</p>
+  </article><article class="dish">
+    <div class="row"><h3>Prosciutto Crudo</h3><i class="lead"></i><span class="price">200</span></div>
+    <p>salza, sýr, parmská šunka, parmezán, rukola</p>
+  </article><article class="dish">
+    <div class="row"><h3>Prosciutto e Olive</h3><i class="lead"></i><span class="price">164</span></div>
+    <p>salza, sýr, šunka, olivy</p>
+  </article><article class="dish">
+    <div class="row"><h3>Rooma</h3><i class="lead"></i><span class="price">184</span></div>
+    <p>salza, šunka, uzený sýr, pórek, slanina, česnek</p>
+  </article><article class="dish">
+    <div class="row"><h3>Rustika</h3><i class="lead"></i><span class="price">180</span></div>
+    <p>salza, sýr, kuřecí maso, niva, parmezán</p>
+  </article><article class="dish">
+    <div class="row"><h3>Salamino</h3><i class="lead"></i><span class="price">170</span></div>
+    <p>salza, sýr, mix salámů</p>
+  </article></div>
+      <div class="col"><article class="dish">
+    <div class="row"><h3>Samuraj<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, pórek, slanina, feferonky, cibule</p>
+  </article><article class="dish">
+    <div class="row"><h3>Se šunkou</h3><i class="lead"></i><span class="price">159</span></div>
+    <p>salza, sýr, šunka</p>
+  </article><article class="dish">
+    <div class="row"><h3>Siciliana</h3><i class="lead"></i><span class="price">180</span></div>
+    <p>salza, sýr, ančovičky, kapary</p>
+  </article><article class="dish">
+    <div class="row"><h3>Šmak</h3><i class="lead"></i><span class="price">190</span></div>
+    <p>salza, sýr, slanina, niva, žampiony, cibule, vejce</p>
+  </article><article class="dish">
+    <div class="row"><h3>Tonno e Cipolla</h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, tuňák, cibule</p>
+  </article><article class="dish">
+    <div class="row"><h3>Tvarůžková</h3><i class="lead"></i><span class="price">194</span></div>
+    <p>smetana, šunka, tvarůžky, pórek, červená cibule, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Vegana<span class="tag-badge vegan">Vegan</span></h3><i class="lead"></i><span class="price">190</span></div>
+    <p>salza, vegan sýr, brokolice, rajčata, kukuřice, česnekový olej, oregáno</p>
+  </article><article class="dish">
+    <div class="row"><h3>Vegan Capricciosa<span class="tag-badge vegan">Vegan</span></h3><i class="lead"></i><span class="price">190</span></div>
+    <p>salza, vegan sýr, žampiony, kukuřice, olivy, oregáno, česnekový olej</p>
+  </article><article class="dish">
+    <div class="row"><h3>Vegan Verdura<span class="tag-badge vegan">Vegan</span></h3><i class="lead"></i><span class="price">190</span></div>
+    <p>salza, vegan sýr, žampiony, špenát, rajčata</p>
+  </article><article class="dish">
+    <div class="row"><h3>Vegan Vegetariana<span class="tag-badge vegan">Vegan</span></h3><i class="lead"></i><span class="price">190</span></div>
+    <p>salza, vegan sýr, kukuřice, listový špenát, rajčata, pórek, paprika</p>
+  </article><article class="dish">
+    <div class="row"><h3>Vegetariana<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">175</span></div>
+    <p>salza, sýr, kukuřice, listový špenát, rajčata, pórek, paprika</p>
+  </article><article class="dish">
+    <div class="row"><h3>Quattro Formaggi<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">195</span></div>
+    <p>smetana, eidam, niva, uzený sýr, hermelín</p>
+  </article><article class="dish">
+    <div class="row"><h3>Quattro Stagioni</h3><i class="lead"></i><span class="price">174</span></div>
+    <p>salza, sýr, ¼ šunka, ¼ žampiony, ¼ zelenina, ¼ olivy</p>
+  </article></div>
+    </div>
+    <div class="band">
+      <div class="col">
+        <header class="hd">
+    <h2>Saláty</h2>
+    
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Osvěžující salát s kuřecím masem</h3><i class="lead"></i><span class="price">162</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Provensálský salát s kuřecím</h3><i class="lead"></i><span class="price">152</span></div>
+    <p>míchaná zelenina, kuřecí maso, balkánský sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Řecký salát<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">123</span></div>
+    <p>míchaná zelenina, olivy, balkánský sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Šopský salát<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">112</span></div>
+    <p>míchaná zelenina, balkánský sýr</p>
+  </article>
+      </div>
+      <div class="col">
+        <header class="hd">
+    <h2>Přílohy</h2>
+    
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Americké brambory<span class="spec"> 200 g</span></h3><i class="lead"></i><span class="price">54</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Hranolky<span class="spec"> 200 g</span></h3><i class="lead"></i><span class="price">51</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Krokety<span class="spec"> 200 g</span></h3><i class="lead"></i><span class="price">58</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Bramboráčky</h3><i class="lead"></i><span class="price">61</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Rýže<span class="spec"> 200 g</span></h3><i class="lead"></i><span class="price">46</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Kečup<span class="spec"> porce</span></h3><i class="lead"></i><span class="price">29</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Tatarka<span class="spec"> porce</span></h3><i class="lead"></i><span class="price">29</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Dresing<span class="spec"> porce</span></h3><i class="lead"></i><span class="price">29</span></div>
+    
+  </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="p3">
+  <div class="pad pad-top">
+    <div class="cols">
+      <div class="col">
+        <header class="hd">
+    <h2>Těstoviny</h2>
+    <span>zapékané v peci</span>
+  </header>
+        <div class="grp">
+    <h4>Lasagne<em>300 g</em></h4>
+    <article class="dish">
+    <div class="row"><h3>Al Forno</h3><i class="lead"></i><span class="price">168</span></div>
+    <p>šunka, boloňská masová směs, smetana, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Spinaci<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">168</span></div>
+    <p>vejce, listový špenát, smetanová omáčka, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Quattro Formaggi<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">182</span></div>
+    <p>smetanová omáčka, eidam, niva, uzený sýr, hermelín</p>
+  </article>
+  </div>
+        <div class="grp">
+    <h4>Špagety<em>200 g</em></h4>
+    <article class="dish">
+    <div class="row"><h3>A la panna</h3><i class="lead"></i><span class="price">162</span></div>
+    <p>smetanová omáčka, šunka, žampiony, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Bolognese<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">158</span></div>
+    <p>ostrá mletá masová směs, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Carbonara</h3><i class="lead"></i><span class="price">168</span></div>
+    <p>nezapékané · slanina, vejce, česnek, parmezán</p>
+  </article><article class="dish">
+    <div class="row"><h3>Labůžo</h3><i class="lead"></i><span class="price">162</span></div>
+    <p>smetanová omáčka, šunka, salám, rajče, paprika, hermelín, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Pepínovy</h3><i class="lead"></i><span class="price">172</span></div>
+    <p>smetanová omáčka, slanina, listový špenát, kukuřice, česnek, sýr</p>
+  </article>
+  </div>
+        <div class="grp">
+    <h4>Tortellini<em>200 g</em></h4>
+    <article class="dish">
+    <div class="row"><h3>A la panna</h3><i class="lead"></i><span class="price">168</span></div>
+    <p>smetanová omáčka, šunka, žampiony, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Bolognese<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">163</span></div>
+    <p>ostrá mletá masová směs, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Quattro Formaggi</h3><i class="lead"></i><span class="price">175</span></div>
+    <p>smetanová omáčka, eidam, niva, uzený sýr, hermelín</p>
+  </article>
+  </div>
+        <div class="grp">
+    <h4>Gnocchi<em>200 g</em></h4>
+    <article class="dish">
+    <div class="row"><h3>Bolognese<span class="tag-badge palive">Pálivé</span></h3><i class="lead"></i><span class="price">163</span></div>
+    <p>ostrá mletá masová směs, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Pepínovy</h3><i class="lead"></i><span class="price">172</span></div>
+    <p>smetanová omáčka, listový špenát, slanina, česnek, kukuřice, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>S kuřecím masem</h3><i class="lead"></i><span class="price">168</span></div>
+    <p>smetanová omáčka, kuřecí maso, brokolice, niva</p>
+  </article><article class="dish">
+    <div class="row"><h3>Quattro Formaggi<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">175</span></div>
+    <p>smetanová omáčka, eidam, niva, uzený sýr, hermelín</p>
+  </article>
+  </div>
+      </div>
+      <div class="col">
+        <header class="hd">
+    <h2>Kuřecí maso</h2>
+    <span>130 g</span>
+  </header>
+        <div class="grp">
+    <h4>Steaky</h4>
+    <article class="dish">
+    <div class="row"><h3>Broccoli</h3><i class="lead"></i><span class="price">172</span></div>
+    <p>slanina, sýr, brokolice, žampiony</p>
+  </article><article class="dish">
+    <div class="row"><h3>Rokfór</h3><i class="lead"></i><span class="price">172</span></div>
+    <p>šunka, niva, vlašské ořechy, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>S hermelínem</h3><i class="lead"></i><span class="price">172</span></div>
+    <p>šunka, hermelín, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>S broskví</h3><i class="lead"></i><span class="price">168</span></div>
+    <p>šunka, broskev, sýr</p>
+  </article><article class="dish">
+    <div class="row"><h3>Smažený kuřecí řízek</h3><i class="lead"></i><span class="price">122</span></div>
+    <p>citrón, okurka</p>
+  </article>
+  </div>
+        <div class="grp">
+    <h4>Směsi</h4>
+    <article class="dish">
+    <div class="row"><h3>Kung pao</h3><i class="lead"></i><span class="price">172</span></div>
+    <p>sójová omáčka, cukr, mandle</p>
+  </article><article class="dish">
+    <div class="row"><h3>Pikantní<span class="tag-badge lehce">Lehce pálivé</span></h3><i class="lead"></i><span class="price">168</span></div>
+    <p>cibule, paprika, feferonky, kečup</p>
+  </article><article class="dish">
+    <div class="row"><h3>Pražského uzenáře</h3><i class="lead"></i><span class="price">172</span></div>
+    <p>pórek, žampiony, šunka, smetana</p>
+  </article><article class="dish">
+    <div class="row"><h3>Topinka s pikantní směsí<span class="tag-badge lehce">Lehce pálivé</span></h3><i class="lead"></i><span class="price">173</span></div>
+    <p>opečený chléb, paprika, rajče, žampiony, cibule, kečup</p>
+  </article>
+  </div>
+        <header class="hd">
+    <h2>Další</h2>
+    
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Bramborové knedlíky</h3><i class="lead"></i><span class="price">142</span></div>
+    <p>7 ks, plněné uzeným masem, cibulka, zelí</p>
+  </article><article class="dish">
+    <div class="row"><h3>Ovocné knedlíky<span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">142</span></div>
+    <p>7 ks, jahoda / meruňka / borůvka + mleté ořechy</p>
+  </article><article class="dish">
+    <div class="row"><h3>Smažený sýr<span class="spec"> 130 g</span><span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">122</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Smažený hermelín<span class="spec"> 120 g</span><span class="tag-badge vegetarian">Vegetarián</span></h3><i class="lead"></i><span class="price">122</span></div>
+    
+  </article>
+        <header class="hd">
+    <h2>Dezerty</h2>
+    
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Zmrzlinový pohár</h3><i class="lead"></i><span class="price">75</span></div>
+    <p>ovoce a šlehačka</p>
+  </article><article class="dish">
+    <div class="row"><h3>Horké maliny</h3><i class="lead"></i><span class="price">85</span></div>
+    <p>vanilková zmrzlina a šlehačka</p>
+  </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="p4">
+  <div class="pad pad-top">
+    <div class="cols drink">
+      <div class="col">
+        <header class="hd">
+    <h2>Nealko</h2>
+    
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Mango<span class="spec"> točená limonáda 0,3 / 0,5 l</span></h3><i class="lead"></i><span class="price">35 / 45</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Kofola<span class="spec"> 0,3 / 0,5 l</span></h3><i class="lead"></i><span class="price">35 / 45</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Malinovka<span class="spec"> 0,3 / 0,5 l</span></h3><i class="lead"></i><span class="price">35 / 45</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Coca-Cola<span class="spec"> 0,33 l</span></h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Coca-Cola light<span class="spec"> 0,33 l</span></h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Fanta<span class="spec"> 0,33 l</span></h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Sprite<span class="spec"> 0,33 l</span></h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Tonic Water / Tonic Ginger<span class="spec"> 0,33 l</span></h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Birell ovocný<span class="spec"> 0,5 l</span></h3><i class="lead"></i><span class="price">45</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Ledový čaj Nestea<span class="spec"> 0,33 l</span></h3><i class="lead"></i><span class="price">39</span></div>
+    <p>broskev, citron</p>
+  </article><article class="dish">
+    <div class="row"><h3>Bonaqua<span class="spec"> jemně perlivá, neperlivá 0,25 l</span></h3><i class="lead"></i><span class="price">37</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Džbán s vodou<span class="spec"> 0,5 l</span></h3><i class="lead"></i><span class="price">39</span></div>
+    <p>citrón, led</p>
+  </article>
+        <h4>Džusy<span class="spec"> 0,3 l</span></h4>
+        <article class="dish">
+    <div class="row"><h3>Multivitamín</h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Pomeranč</h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Jablko</h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Jahoda</h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Hruška</h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article>
+        <h4>Horké nápoje</h4>
+        <article class="dish">
+    <div class="row"><h3>Espresso Lavazza<span class="spec"> 7 g</span></h3><i class="lead"></i><span class="price">49</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Espresso Lavazza piccolo<span class="spec"> 7 g</span></h3><i class="lead"></i><span class="price">49</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Cappuccino<span class="spec"> 7 g</span></h3><i class="lead"></i><span class="price">65</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Latté macchiato<span class="spec"> 7 g</span></h3><i class="lead"></i><span class="price">69</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Turecká káva<span class="spec"> 7 g</span></h3><i class="lead"></i><span class="price">39</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Vídeňská káva se šlehačkou<span class="spec"> 7 g</span></h3><i class="lead"></i><span class="price">69</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Mléko ke kávě<span class="spec"> porce</span></h3><i class="lead"></i><span class="price">10</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Svařák<span class="spec"> 0,2 l</span></h3><i class="lead"></i><span class="price">57</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Horký nápoj<span class="spec"> jablko / hruška / brusinka 0,2 l</span></h3><i class="lead"></i><span class="price">47</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Horká griotka<span class="spec"> 0,2 l</span></h3><i class="lead"></i><span class="price">59</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Čaj XXL<span class="spec"> 0,35 l</span></h3><i class="lead"></i><span class="price">53</span></div>
+    <p>příchuť dle výběru</p>
+  </article>
+      </div>
+      <div class="col">
+        <header class="hd">
+    <h2>Pivo</h2>
+    <span>točené 0,3 / 0,5 l</span>
+  </header>
+        <article class="dish">
+    <div class="row"><h3>Kozel 11°</h3><i class="lead"></i><span class="price">35 / 45</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Pilsner Urquell 12°</h3><i class="lead"></i><span class="price">49 / 59</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Albrecht 11°</h3><i class="lead"></i><span class="price">42 / 52</span></div>
+    <p>nefiltrované</p>
+  </article><article class="dish">
+    <div class="row"><h3>Cvikov Klíč 12°</h3><i class="lead"></i><span class="price">42 / 52</span></div>
+    <p>nepasterizované, nefiltrované</p>
+  </article>
+        <article class="dish">
+    <div class="row"><h3>Kozel 11° řezaný<span class="spec"> 0,5 l</span></h3><i class="lead"></i><span class="price">45</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Birell nealko<span class="spec"> světlé / polotmavé 0,5 l</span></h3><i class="lead"></i><span class="price">45</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Frisco ovocné<span class="spec"> 0,33 l</span></h3><i class="lead"></i><span class="price">45</span></div>
+    
+  </article>
+        <h4>Víno</h4>
+        <article class="dish">
+    <div class="row"><h3>Chardonnay<span class="spec"> bílé, suché 0,1 / 0,2 l</span></h3><i class="lead"></i><span class="price">44 / 59</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Merlot<span class="spec"> červené, suché 0,1 / 0,2 l</span></h3><i class="lead"></i><span class="price">44 / 59</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Prosecco<span class="spec"> 0,1 / 0,2 l</span></h3><i class="lead"></i><span class="price">49 / 75</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Lambrusco Emilia<span class="spec"> bianco / rosso 0,2 l</span></h3><i class="lead"></i><span class="price">58</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Sekt Bohemia Demi Sec<span class="spec"> 0,75 l</span></h3><i class="lead"></i><span class="price">255</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Cinzano<span class="spec"> 1 dcl</span></h3><i class="lead"></i><span class="price">75</span></div>
+    
+  </article>
+        <h4>Likéry<span class="spec"> 0,04 l</span></h4>
+        <article class="dish">
+    <div class="row"><h3>Jägermeister</h3><i class="lead"></i><span class="price">69</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Berentzen</h3><i class="lead"></i><span class="price">49</span></div>
+    <p>příchuť dle nabídky</p>
+  </article><article class="dish">
+    <div class="row"><h3>Fernet Stock<span class="spec"> klasik / citrus</span></h3><i class="lead"></i><span class="price">49</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Becherovka</h3><i class="lead"></i><span class="price">49</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Peppermint</h3><i class="lead"></i><span class="price">49</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Griotte</h3><i class="lead"></i><span class="price">49</span></div>
+    
+  </article>
+        <h4>Destiláty<span class="spec"> 0,04 l</span></h4>
+        <article class="dish">
+    <div class="row"><h3>Tullamore Dew</h3><i class="lead"></i><span class="price">79</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Jack Daniel’s<span class="spec"> original / honey / fire</span></h3><i class="lead"></i><span class="price">84</span></div>
+    
+  </article>
+        <article class="dish">
+    <div class="row"><h3>Božkov</h3><i class="lead"></i><span class="price">49</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Božkov Republica</h3><i class="lead"></i><span class="price">59</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Diplomatico</h3><i class="lead"></i><span class="price">115</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Captain Bucanero</h3><i class="lead"></i><span class="price">95</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Legendario</h3><i class="lead"></i><span class="price">95</span></div>
+    
+  </article>
+        <article class="dish">
+    <div class="row"><h3>Finlandia vodka</h3><i class="lead"></i><span class="price">59</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Slivovice 45 %</h3><i class="lead"></i><span class="price">59</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Metaxa ****</h3><i class="lead"></i><span class="price">69</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Beefeater gin</h3><i class="lead"></i><span class="price">65</span></div>
+    
+  </article><article class="dish">
+    <div class="row"><h3>Beefeater Pink gin</h3><i class="lead"></i><span class="price">65</span></div>
+    
+  </article>
+      </div>
+    </div>
+    <div class="snacks">
+      <strong>Něco na chuť</strong>
+      <span>Chipsy <b>42</b></span>
+      <span>Slané tyčinky<span class="spec"> 100 g</span> <b>37</b></span>
+      <span>Arašídy<span class="spec"> 100 g</span> <b>37</b></span>
+      <span>Pražené mandle<span class="spec"> 80 g</span> <b>87</b></span>
+      <span>Krabice / obal <b>10</b></span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
